@@ -4,15 +4,15 @@
 filename=$1
 cut_list=$2
 out_path=$3
-# out_path must not have a trailing slash
+container=$4
 
 # does the output directory exist?
   if [ ! -d "$out_path" ]; then
     while true; do
-      read -p "Do you wish to create directory $out_path?" yn
+      read -p "Oh noes, that directory isn't there. should I create $out_path for you?" yn
       case $yn in
           [Yy]* ) mkdir $out_path; break;;
-          [Nn]* ) echo "Ok."; exit;;
+          [Nn]* ) echo "Ok. I'll be here if you want to try again."; exit;;
           * ) echo "Please answer yes or no.";;
       esac
     done
@@ -22,16 +22,13 @@ out_path=$3
 if [[ -f "$filename" ]]
   then
 # now check to see if the cut_list exists
-    echo "Yes we have a video"
+    echo "Video......... Check!"
     if [[ -f "$cut_list" ]]
 # The cut list exists, let's chop it up.
       then
-        echo "yes we have a cut list."
-        while IFS=, read start_time end_time clip_title
-        do
-          echo "Get to the Chopper!"
-          ffmpeg -i $filename -ss $start_time -to $end_time -strict -2 ${out_path%/}/${clip_title// /_}.mp4 < /dev/null
-        done < $cut_list
+        echo "Cut List........ Check!"
+# chop the videos
+        ./chop-vids.sh $filename $cut_list $out_path
 # if the cut list does not exist, exit.
       else echo "That cut list doesn't exist. Try again"
         exit
@@ -41,5 +38,9 @@ if [[ -f "$filename" ]]
     exit
 fi
 
-# optional - upload cuts to Rackspace Cloud Files. Requires install of turbolift.
-turbolift --internal -u $OS_USERNAME -a $OS_API_KEY --os-rax-auth $OS_RAX_AUTH upload -s $out_path -c oh-clips
+if [ ! -z "$4" ]
+  then
+    echo ./chop-export.sh $out_path $container
+  else
+    echo "I guess we're not exporting those videos, afterall."
+fi
