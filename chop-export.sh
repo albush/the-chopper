@@ -13,4 +13,4 @@ container=$2
 
 echo "Let's upload these files. Shipping them off to your container named $container."
 
-turbolift --internal -u $OS_USERNAME -a $OS_API_KEY --os-rax-auth $OS_RAX_AUTH upload -s $clip_path -c $container
+turbolift --os-endpoint-type internalURL -u $OS_USERNAME -a $OS_API_KEY --os-rax-auth $OS_RAX_AUTH upload -s $clip_path -c $container

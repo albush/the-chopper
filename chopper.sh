@@ -28,7 +28,7 @@ if [[ -f "$filename" ]]
       then
         echo "Cut List........ Check!"
 # chop the videos
-        ./chop-vids.sh $filename $cut_list $out_path
+        chop-vids.sh $filename $cut_list $out_path
 # if the cut list does not exist, exit.
       else echo "That cut list doesn't exist. Try again"
         exit
@@ -40,7 +40,7 @@ fi
 
 if [ ! -z "$4" ]
   then
-    echo ./chop-export.sh $out_path $container
+    echo chop-export.sh $out_path $container
   else
     echo "I guess we're not exporting those videos, afterall."
 fi
