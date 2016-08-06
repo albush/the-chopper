@@ -11,23 +11,22 @@ I have over 150 videos of conversations with subject matter experts. The convers
 
 ## Usage
 
-    $ cutter [PATH_TO_VIDEO_FILE] [PATH_TO_CUT_LIST] [PATH_TO_OUTPUT_DIRECTORY] (Optional) [RACKSPACE_CLOUDFILES_CONTAINER]
+Usage:
+`$ chopper [flags]`
 
-- `[PATH_TO_VIDEO_FILE]` Can be any video input recognized by `ffmpeg`
-- `[PATH_TO_CUT_LIST]` The cut list is a comma separated text file as follows:
-  - `start_time,end_time,clip_title ` in the format `HH:MM:SS`
-  - eg:
-```
-00:00:33,00:02:45,First topic of conversation
-00:03:12,00:23:37,A really long topic
-```
-- `[PATH_TO_OUTPUT_DIRECTORY]` is the destination directory for the videos when completed.
-- `[RACKSPACE_CLOUDFILES_CONTAINER]` is optional, and allows you to upload the finished videos to a Rackspace Cloud Files container. You'll need to install and configure turbolift.
+Required Flags:
+`-f` file path. The path to your original video file.
+`-c` cut list. A comma separated list of points to cut.
+`-o` output path. The destination for finished clips.
+
+Optional Flags:
+`-A `Audio. Additionally export an mp3 version of the original video.
+`-E` Export to Cloud Files. Provide a Rackspace Cloud Files container. Requires the installation of [turbolift](https://github.com/cloudnull/turbolift).
 
 ## To Do
 
 - [ ] Create an example video and cut list
 - [ ] Import origin video from Cloud Files
 - [ ] Concatenate a standard intro/outro to each snippet before sending to Cloud Files
-- [ ] Return Cloud Files url for each snippet
-- [ ] Add a function to copy a version as mp3
+- [x] Return Cloud Files url for each snippet
+- [x] Add a function to copy a version as mp3

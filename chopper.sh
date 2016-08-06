@@ -17,7 +17,7 @@ usage ()
   echo "  -o output path. The destination for finished clips."
   echo "  "
   echo "Optional Flags:"
-  # echo "  -A Audio. Additionally export an mp3 version of the original video."
+  echo "  -A Audio. Additionally export an mp3 version of the original video."
   echo "  -E Export to Cloud Files. Provide a Rackspace Cloud Files container. Requires the installation of turbolift."
   echo "  -h help. You're reading it now."
   exit
@@ -83,9 +83,10 @@ shift $((OPTIND-1))  #This tells getopts to move on to the next argument.
 # ----- Extract Audio -----
 if [ $audio == 1 ]
   then
-    echo "Extracting Audio from $filename"
+    echo "Making MP3 from $filename"
     ffmpeg -i $filename  -strict -2 ${out_path%/}/${fbname// /_}.mp3
-    # ffmpeg -i $filename  -strict -2 ${out_path%/}/${fbname// /_}.ogg 
+    # echo "Making OGG from $filename"
+    # ffmpeg -i $filename  -strict -2 ${out_path%/}/${fbname// /_}.ogg
     echo "$filename Audio Extraction Finished"
 fi
 # ----- End Audio Extraction -----
@@ -93,16 +94,16 @@ fi
 # read in a csv, use those values to create individual files via ffmpeg.
 # chop the videos
 while IFS=, read start_time end_time clip_title
-do
-  echo "Chopping $clip_title"
-  nohup ffmpeg -i $filename -ss $start_time -to $end_time -strict -2 ${out_path%/}/${clip_title// /_}.mp4 < /dev/null &
-  echo "$clip_title Finished"
-done < $cut_list
+  do
+    echo "Chopping $clip_title"
+    ffmpeg -i $filename -ss $start_time -to $end_time -strict -2 ${out_path%/}/${clip_title// /_}.mp4 < /dev/null
+  done < $cut_list
 
 # Optional Export
 
 if [ ! -z "$container" ]
   then
     echo "Let's upload these files. Shipping them off to your container named $container."
-    turbolift --os-endpoint-type internalURL -u $OS_USERNAME -a $OS_API_KEY --os-rax-auth $OS_RAX_AUTH upload -s $clip_path -c $container
-fi
+    echo " - [${clip_title}](http://fc3007acf428a103a8a4-83f594235d1123a827fa878c9f3b655b.r71.cf1.rackcdn.com/${clip_title// /_}.mp4)" >> ${out_path}/${fbname}.md
+    turbolift -e internalURL -u $OS_USERNAME -a $OS_API_KEY --os-rax-auth $OS_RAX_AUTH upload -s $out_path -c $container
+    fi
